@@ -1,4 +1,4 @@
-# Majordomo SDLC — Direct mode installation guide
+# Majordomo SDLC Claude plugin — Installation guide
 
 ## Contents
 
@@ -8,7 +8,7 @@
 4. [Configure the Majordomo server](#4-configure-the-majordomo-server)
 5. [Sign in](#5-sign-in)
 6. [Check the installation](#6-check-the-installation)
-7. [Your first run](#7-your-first-run)
+7. [Next steps](#7-next-steps)
 8. [Upgrade and uninstall](#8-upgrade-and-uninstall)
 
 ---
@@ -23,7 +23,7 @@ You need the following.
 | **Git** (on Windows: Git for Windows, which includes Git Bash) | Execution branches, commits and pushes. Claude Code on Windows also needs Git Bash to run the plugin's start-up hook. | `git --version` |
 | **Python 3** (standard library only, nothing to `pip install`) | The plugin's helper script (`mdsync.py`) does the bookkeeping and the sync. | `python --version`, or `python3 --version`, or `py -3 --version` on Windows |
 | **GitHub CLI `gh`**, signed in | Reads the issue and opens the pull request. | `gh auth status` |
-| A **local clone** of the working repo | Direct mode works in your checkout. | — |
+| A **local clone** of the working repo | The plugin works in your checkout. | — |
 | The **plugin zip**, downloaded from the Majordomo release page | See [section 2](#2-get-the-plugin). | — |
 | From your Majordomo admin: the **server URL**, and the repo's **tenant ID** and **workspace ID** | See [section 4](#4-configure-the-majordomo-server). | — |
 
@@ -125,7 +125,7 @@ Use one `KEY=value` per line. `#` starts a comment.
 
 If you put these in the repo's `./.env`, make sure `.env` is in `.gitignore`.
 
-This is the same settings file the `majordomo-sdlc` CLI uses. If you've already set up the CLI, there's nothing more to do. Direct mode doesn't need `REPO_TOKEN`: it uses your own `git` and `gh` credentials.
+This is the same settings file the `majordomo-sdlc` CLI uses. If you've already set up the CLI, there's nothing more to do. The plugin doesn't need `REPO_TOKEN`: it uses your own `git` and `gh` credentials.
 
 ## 5. Sign in
 
@@ -166,44 +166,13 @@ The session belongs to its tenant. If you change `TENANT_ID`, sign in again.
 ## 6. Check the installation
 
 1. Run `/plugin` and open **Installed**. **md-sdlc** is listed and enabled.
-2. Type `/md-sdlc:`. The autocomplete lists the plugin's commands:
-
-   | Command | Does |
-   |---|---|
-   | `login` | Sign in, sign out, or show who is signed in. |
-   | `start <repo-url> <issue> [target-branch]` | Create or resume the execution for an issue, and check out its branch `sdlc-<id>`. |
-   | `spec`, `plan`, `ut-cases`, `implement`, `unit-test` | Generate a stage. |
-   | `review [stage]` | Score a stage against its rubric. |
-   | `eng-review <plan\|implementation>` | Run the interactive engineering review. |
-   | `feedback [stage] <instructions>` | Revise a stage's artifact. |
-   | `sync [stage]` | Send reviewed stages to the Majordomo server. |
-   | `status` | Show the server's view next to your local versions. |
-   | `raise-pr` | Push `sdlc-<id>` and open the pull request. |
-
-   The underlying stage and review skills (`md-specification`, `md-planning`, …) are hidden from the menu on purpose. Use the commands above, which call those skills with the right inputs and outputs.
+2. Type `/md-sdlc:`. The autocomplete lists the plugin's commands: `login`, `start`, `spec`, `plan`, `ut-cases`, `implement`, `unit-test`, `review`, `feedback`, `sync`, `status` and `raise-pr`. The underlying stage and review skills (`md-specification`, `md-planning`, …) are hidden from the menu on purpose. What each command does is in the [Developer manual, section 5.1](developer-manual.md#51-command-reference).
 3. Run `/md-sdlc:login whoami`. It shows your user and the server URL.
 4. In the working repo, check that `.majordomo/templates/` and `.majordomo/docs/` exist. The plugin creates them from its built-in templates at the start of each session, and never overwrites files that are already there.
 
-## 7. Your first run
+## 7. Next steps
 
-In Claude Code, at the root of the working repo:
-
-```
-/md-sdlc:start https://github.com/<org>/<repo> 42
-```
-
-- Give the repo URL **exactly as it is registered** on the Majordomo server: the same case, `https` rather than ssh, and with or without `.git` as registered.
-- Give the issue as a GitHub issue number (`42`) or a Jira key (`PROJ-123`). For a Jira key, Claude asks you to paste the issue's title and description.
-
-The command prints the execution ID and checks out the branch `sdlc-<id>`. **On that branch you can leave out the execution ID** in every later command. Continue with:
-
-```
-/md-sdlc:spec
-/md-sdlc:review spec
-/md-sdlc:sync spec
-```
-
-Then do the same for `plan`, `ut-cases`, `implement` and `unit-test`, and finish with `/md-sdlc:raise-pr`. Run `/md-sdlc:status` at any point to see where things stand.
+You're set up. The [Developer manual](developer-manual.md) covers the rest, for both the plugin and the CLI: creating the issue, starting an execution with `/md-sdlc:start`, running, reviewing and syncing each stage, and raising the PR. Start with [section 2.4, Using the plugin in Claude Code](developer-manual.md#24-using-the-plugin-in-claude-code).
 
 ## 8. Upgrade and uninstall
 
